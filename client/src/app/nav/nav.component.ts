@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { User } from '../_models/user';
 import { AccountService } from '../_Services/account.service';
@@ -15,7 +17,9 @@ model:any={}
 
 //in order to access this server from the template
 //to use to get current user, we have to make this public
-  constructor(public accountService:AccountService) { }
+  constructor(public accountService:AccountService,
+    private router:Router,
+    private toastr:ToastrService) { }
 
   ngOnInit(): void {
    // this.getCurrentUser();
@@ -23,15 +27,17 @@ model:any={}
 
   login(){
     this.accountService.login(this.model).subscribe(response=>{
-      console.log(response);
+      this.router.navigateByUrl('/members');
      // this.loggedIn=true;
     },error=>{
       console.log(error);
+      this.toastr.error(error.error);
     });
   }
   logout(){
     this.accountService.logout();
    // this.loggedIn=false;
+   this.router.navigateByUrl('/');
   }
 
   //We wont be using this method as here we are not subscribed to an http request,
